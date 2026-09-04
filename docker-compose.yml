@@ -1,0 +1,42 @@
+services:
+  localconvert:
+    build: .
+    image: localconvert:latest
+    container_name: localconvert
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - LOCALCONVERT_OUTPUT_DIR=/output
+      - LOCALCONVERT_CONFIG_DIR=/config
+      - LOCALCONVERT_TEMP_DIR=/tmp/localconvert
+      - XDG_RUNTIME_DIR=/tmp/runtime-app
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ${XAUTHORITY:-~/.Xauthority}:/root/.Xauthority:ro
+      - ${OUTPUT_DIR:-./output}:/output
+      - ${CONFIG_DIR:-./docker-config}:/config
+    network_mode: host
+    ipc: host
+    pid: host
+    stdin_open: true
+    tty: true
+
+  # VNC/novnc variant — use for headless servers or remote access.
+  # Access via http://localhost:6080
+  localconvert-novnc:
+    build:
+      context: .
+      dockerfile: Dockerfile.vnc
+    image: localconvert-novnc:latest
+    container_name: localconvert-novnc
+    ports:
+      - "6080:6080"
+    environment:
+      - LOCALCONVERT_OUTPUT_DIR=/output
+      - LOCALCONVERT_CONFIG_DIR=/config
+      - LOCALCONVERT_TEMP_DIR=/tmp/localconvert
+    volumes:
+      - ${OUTPUT_DIR:-./output}:/output
+      - ${CONFIG_DIR:-./docker-config}:/config
+    shm_size: 2gb
+    restart: unless-stopped

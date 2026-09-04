@@ -1,0 +1,17 @@
+FROM localconvert:latest
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    novnc \
+    websockify \
+    supervisor \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/supervisord.conf /etc/supervisor/conf.d/localconvert.conf
+
+EXPOSE 6080
+
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/localconvert.conf"]

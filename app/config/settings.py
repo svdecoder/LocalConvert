@@ -16,6 +16,9 @@ from typing import Any
 
 
 def user_config_dir(app_name: str = "LocalConvert") -> Path:
+    env_override = os.environ.get("LOCALCONVERT_CONFIG_DIR")
+    if env_override:
+        return Path(env_override)
     if sys.platform == "win32":
         base = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
     elif sys.platform == "darwin":
@@ -36,11 +39,20 @@ def user_cache_dir(app_name: str = "LocalConvert") -> Path:
 
 @dataclass
 class Settings:
-    output_folder: str = str(Path.home() / "Converted")
+    output_folder: str = str(
+        Path(os.environ.get("LOCALCONVERT_OUTPUT_DIR", Path.home() / "Converted"))
+    )
     default_quality: str = "high"  # "low" | "medium" | "high" | "maximum"
     theme: str = "dark"  # "dark" | "light"
     hardware_acceleration: bool = True
-    temp_file_location: str = str(user_cache_dir() / "tmp")
+    temp_file_location: str = str(
+        Path(
+            os.environ.get(
+                "LOCALCONVERT_TEMP_DIR",
+                user_cache_dir() / "tmp",
+            )
+        )
+    )
     max_simultaneous_conversions: int = 2
     preserve_metadata: bool = True
     auto_open_output_folder: bool = False

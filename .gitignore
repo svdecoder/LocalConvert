@@ -9,6 +9,7 @@ __pycache__/
 venv/
 env/
 .env/
+.pytest_cache/
 
 # Build artifacts
 build/
@@ -18,7 +19,6 @@ dist/
 *.spec.bak
 
 # Testing
-.pytest_cache/
 htmlcov/
 .coverage
 .coverage.*
@@ -41,3 +41,7 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Docker runtime (user-created at runtime)
+output/
+docker-config/

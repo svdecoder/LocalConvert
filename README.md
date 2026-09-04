@@ -10,6 +10,8 @@ desktop GUI. No cloud uploads, no external APIs, no online conversion
 services — every conversion runs using tools installed on your own
 computer.
 
+**THIS PROJECT IS FULLY VIBE CODED.** I vide-coded because I needed it.
+
 <p align="center">
   <i>Documents · Spreadsheets · Ebooks · Images · Video · Audio · PDF (with OCR)</i>
 </p>
@@ -48,11 +50,37 @@ Then install the system tools you need (LibreOffice, Pandoc, Calibre,
 FFmpeg, Tesseract) using your package manager.
 </details>
 
+<details>
+<summary>Docker (zero host dependencies)</summary>
+
+All system tools are bundled inside the container — no LibreOffice/Pandoc/FFmpeg
+install on your host needed. Output files land in `./output/`.
+
+```bash
+./docker-run.sh build    # build the image once
+./docker-run.sh run      # X11 forwarding (Linux desktop)
+./docker-run.sh novnc    # noVNC in browser (headless/remote, port 6080)
+```
+
+Override the output directory:
+
+```bash
+OUTPUT_DIR=~/converted ./docker-run.sh run
+```
+</details>
+
 ### Run
 
 ```bash
 source venv/bin/activate      # Windows: .\venv\Scripts\Activate.ps1
 python -m app.main
+```
+
+### Uninstall
+
+```bash
+./uninstall.sh                # Linux/macOS: removes venv + system tools
+powershell -File uninstall.ps1 # Windows: removes venv (uninstall system tools manually via Settings)
 ```
 
 ---
