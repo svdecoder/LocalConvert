@@ -57,6 +57,10 @@ _INSTALL_HINTS: dict[str, str] = {
         "Install ImageMagick from https://imagemagick.org/script/download.php "
         "(optional — only used for a few advanced image operations)."
     ),
+    "convert": (
+        "Install ImageMagick from https://imagemagick.org/script/download.php "
+        "(provides the 'convert' command for legacy ImageMagick versions)."
+    ),
 }
 
 _PACKAGE_INSTALL_HINTS: dict[str, str] = {
@@ -71,11 +75,8 @@ _PACKAGE_INSTALL_HINTS: dict[str, str] = {
 }
 
 
-@functools.lru_cache(maxsize=None)
-def check_executable(name: str) -> ToolStatus:
-    """Check whether an external executable is on PATH, caching the result
-    for the lifetime of the process (call ``check_executable.cache_clear()``
-    after a user installs something and asks to re-check)."""
+def _check_executable_impl(name: str) -> ToolStatus:
+    """Uncached lookup of a single executable (used by the cached wrapper)."""
     path = shutil.which(name)
     if not path:
         return ToolStatus(
@@ -97,6 +98,20 @@ def check_executable(name: str) -> ToolStatus:
     except Exception:
         version = ""
     return ToolStatus(name=name, kind="executable", available=True, version=version, path=path)
+
+
+@functools.lru_cache(maxsize=None)
+def check_executable(name: str) -> ToolStatus:
+    """Check whether an external executable is on PATH, caching the result
+    for the lifetime of the process (call ``check_executable.cache_clear()``
+    after a user installs something and asks to re-check)."""
+    status = _check_executable_impl(name)
+    if not status.available:
+        if name == "magick":
+            return _check_executable_impl("convert")
+        if name == "convert":
+            return _check_executable_impl("magick")
+    return status
 
 
 @functools.lru_cache(maxsize=None)

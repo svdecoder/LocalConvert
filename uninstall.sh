@@ -89,7 +89,9 @@ remove_apt() {
         return
     fi
     info "Removing: ${to_remove[*]}"
-    run_sudo apt remove -y "${to_remove[@]}"
+    for pkg in "${to_remove[@]}"; do
+        run_sudo apt remove -y "$pkg" 2>/dev/null || true
+    done
     run_sudo apt autoremove -y
     ok "System packages removed"
 }
@@ -105,7 +107,9 @@ remove_dnf() {
         return
     fi
     info "Removing: ${to_remove[*]}"
-    run_sudo dnf remove -y "${to_remove[@]}"
+    for pkg in "${to_remove[@]}"; do
+        run_sudo dnf remove -y "$pkg" 2>/dev/null || true
+    done
     ok "System packages removed"
 }
 
@@ -120,7 +124,9 @@ remove_pacman() {
         return
     fi
     info "Removing: ${to_remove[*]}"
-    run_sudo pacman -Rns --noconfirm "${to_remove[@]}"
+    for pkg in "${to_remove[@]}"; do
+        run_sudo pacman -Rns --noconfirm "$pkg" 2>/dev/null || true
+    done
     ok "System packages removed"
 }
 
