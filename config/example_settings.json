@@ -1,0 +1,12 @@
+{
+  "output_folder": "~/Converted",
+  "default_quality": "high",
+  "theme": "dark",
+  "hardware_acceleration": true,
+  "temp_file_location": "~/.cache/LocalConvert/tmp",
+  "max_simultaneous_conversions": 2,
+  "preserve_metadata": true,
+  "auto_open_output_folder": false,
+  "overwrite_existing_files": false,
+  "logging_level": "INFO"
+}
